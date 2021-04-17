@@ -1,75 +1,54 @@
 //import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-function Form() {
-  const registerUser = async event => {
-    event.preventDefault()
-
-    const res = await fetch(
-      'https://hooks.zapier.com/hooks/catch/123456/abcde',
-      {
-        body: JSON.stringify({
           name: event.target.name.value
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        method: 'POST'
-      }
-    )
+import Head from 'next/head'
+import Layout, { siteTitle } from '../components/layout'
+import utilStyles from '../styles/utils.module.css'
+import { getSortedPostsData } from '../lib/posts'
+import Link from 'next/link'
+import Date from '../components/date'
 
-    const result = await res.json()
-    // result.user => 'Ada Lovelace'
-  }
-
+export default function Home({ allPostsData }) {
   return (
-    <form onSubmit={registerUser}>
-      <label htmlFor="name">Name</label>
-      <input id="name" name="name" type="text" autoComplete="name" required />
-      <button type="submit">Register</button>
-    </form>
+    <Layout home>
+      <Head>
+        <title>{siteTitle}</title>
+      </Head>
+      <section className={utilStyles.headingMd}>
+        <p>
+          Hello, I’m <strong>Shu</strong>. I’m a software engineer and a
+          translator (English/Japanese). You can contact me on{' '}
+          <a href="https://twitter.com/chibicode">Twitter</a>.
+        </p>
+        <p>
+          (This is a sample website - you’ll be building a site like this in{' '}
+          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
+        </p>
+      </section>
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Blog</h2>
+        <ul className={utilStyles.list}>
+          {allPostsData.map(({ id, date, title }) => (
+            <li className={utilStyles.listItem} key={id}>
+              <Link href={`/posts/${id}`}>
+                <a>{title}</a>
+              </Link>
+              <br />
+              <small className={utilStyles.lightText}>
+                <Date dateString={date} />
+              </small>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </Layout>
   )
 }
 
-export default function Home() {
-  return (
-    
-      
-      <main className={styles.main}>
-
-        <h1 className={styles.title}>
-          Welcome to <a href="http://localhost:3000/">our page!</a>
-        </h1>
-
-        <h1 className={styles.description}>
-          Insert your personal details{' '}
-          <code className={styles.code}>username,password,email!</code>
-        </h1>
-
-        <div className={styles.grid}>
-          
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-            
-            <h3>Learn &rarr; </h3> 
-            <p> Learn about Next.js in an interactive course with quizzes! </p>
-         
-
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-
-          
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-        </div>    
-     <script> function Form() </script>
-      
-
-    
-      </main> 
-    ) 
-  
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData()
+  return {
+    props: {
+      allPostsData
+    }
   }
-     
-   
+}
