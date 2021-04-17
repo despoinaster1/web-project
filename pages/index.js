@@ -1,5 +1,3 @@
-//import Head from 'next/head'
-          name: event.target.name.value
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
